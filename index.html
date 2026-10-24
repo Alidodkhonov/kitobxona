@@ -100,7 +100,7 @@ function preview(b,inDialog){
   if(!b)return"";const l=L(),k=LIB.links(b);
   return `${inDialog?`<button class="x" id="dx" aria-label="Закрыть">×</button>`:""}${LIB.cover(b,PAL)}<div class="eb">${l.cats[b.cat]}</div><h2>${esc(b.title)}</h2><div class="au">${esc(b.author||l.unknown)}</div>${b.desc?`<div class="desc">${esc(b.desc)}</div>`:""}
   <dl>${LIB.meta(b).map(([t,v])=>`<dt>${t}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
-  <div class="acts"><a class="btn p" target="_blank" rel="noopener" href="${k?esc(k.view):"#"}" aria-disabled="${!k}">${l.read}</a><a class="btn g" target="_blank" rel="noopener" href="${k?esc(k.dl):"#"}" aria-disabled="${!k}">${l.dl}</a></div>${k?"":`<div class="hint">${l.soon}</div>`}`;
+  <div class="acts">${k&&k.only?`<a class="btn p" target="_blank" rel="noopener" href="${esc(k.dl)}">${l.dlPdf}${b.mb?` · ${b.mb} ${l.mb}`:""}</a>`:`<a class="btn p" target="_blank" rel="noopener" href="${k?esc(k.view):"#"}" aria-disabled="${!k}">${l.read}</a><a class="btn g" target="_blank" rel="noopener" href="${k?esc(k.dl):"#"}" aria-disabled="${!k}">${l.dl}</a>`}</div>${k?"":`<div class="hint">${l.soon}</div>`}`;
 }
 function render(){
   const l=L();

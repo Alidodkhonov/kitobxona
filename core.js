@@ -7,7 +7,7 @@ window.LIB = (function () {
       search: "Название, автор или тема…", all: "Все", allLangs: "Все языки",
       sNew: "Новые поступления", sTitle: "По названию", sAuthor: "По автору",
       more: "Показать ещё", seeAll: "Смотреть все", back: "Назад",
-      read: "Открыть PDF", dl: "Скачать", soon: "Ссылка на файл появится после загрузки книг.",
+      read: "Открыть PDF", dl: "Скачать", dlPdf: "Скачать PDF", soon: "Ссылка на файл появится после загрузки книг.",
       author: "Автор", year: "Год", pages: "Страниц", size: "Размер", mb: "МБ", lang: "Язык", cat: "Раздел",
       emptyT: "Ничего не найдено", emptyD: "Попробуйте другое слово или сбросьте фильтры.", reset: "Сбросить",
       results: n => `Найдено: ${n}`, unknown: "Автор не указан", sections: "Разделы", featured: "Избранное собрание",
@@ -20,7 +20,7 @@ window.LIB = (function () {
       search: "Ном, муаллиф ё мавзӯъ…", all: "Ҳама", allLangs: "Ҳама забонҳо",
       sNew: "Иловаҳои нав", sTitle: "Аз рӯи ном", sAuthor: "Аз рӯи муаллиф",
       more: "Боз нишон диҳед", seeAll: "Ҳамаашро дидан", back: "Бозгашт",
-      read: "Кушодани PDF", dl: "Боргирӣ", soon: "Пайванди файл пас аз боргузории китобҳо пайдо мешавад.",
+      read: "Кушодани PDF", dl: "Боргирӣ", dlPdf: "Боргирии PDF", soon: "Пайванди файл пас аз боргузории китобҳо пайдо мешавад.",
       author: "Муаллиф", year: "Сол", pages: "Саҳифа", size: "Ҳаҷм", mb: "МБ", lang: "Забон", cat: "Бахш",
       emptyT: "Ҳеҷ чиз ёфт нашуд", emptyD: "Калимаи дигарро санҷед ё филтрҳоро бекор кунед.", reset: "Бекор кардан",
       results: n => `Ёфт шуд: ${n}`, unknown: "Муаллиф нишон дода нашудааст", sections: "Бахшҳо", featured: "Маҷмӯаи интихобӣ",
@@ -70,7 +70,7 @@ window.LIB = (function () {
     return `<div class="cover gen" style="--c:${col}"><span class="ca">${esc(b.author)}</span><span class="ct">${esc(b.title)}</span></div>`;
   }
   const fid = f => (f.match(/\/d\/([\w-]+)/) || f.match(/[?&]id=([\w-]+)/) || [])[1];
-  const links = b => b.file && /github\.com|githubusercontent/.test(b.file) ? { view: b.file, dl: b.file } : b.file ? { view: fid(b.file) ? `https://drive.google.com/file/d/${fid(b.file)}/view` : b.file, dl: fid(b.file) ? `https://drive.google.com/uc?export=download&id=${fid(b.file)}` : b.file } : null;
+  const links = b => b.file && /github\.com/.test(b.file) ? { view: b.file, dl: b.file, only: true } : b.file ? { view: fid(b.file) ? `https://drive.google.com/file/d/${fid(b.file)}/view` : b.file, dl: fid(b.file) ? `https://drive.google.com/uc?export=download&id=${fid(b.file)}` : b.file } : null;
   function meta(b) {
     const l = L(), m = [];
     if (b.year) m.push([l.year, b.year]);
