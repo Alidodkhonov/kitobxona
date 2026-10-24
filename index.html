@@ -1,0 +1,134 @@
+<title>Китобхонаи Азим</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Option C "Архив": research catalogue. Section index on the left, scannable list in the middle, live preview card on the right */
+:root{
+  --bg:#13161c; --surface:#1a1e26; --raise:#222733; --fg:#ece8df; --muted:#9b9fab; --line:#2a303c;
+  --accent:#8fa7ff; --accent-fg:#13161c; --gold:#d3b16f; --sel:#232a3d;
+  --display:"Alegreya",Georgia,serif; --body:"IBM Plex Sans",system-ui,sans-serif; color-scheme:dark;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4f3ef;--surface:#ffffff;--raise:#f0eee8;--fg:#1a1d24;--muted:#646875;--line:#e2e0d9;--accent:#3047b8;--accent-fg:#ffffff;--gold:#8f6b22;--sel:#eaedfa;color-scheme:light}}
+:root[data-theme="light"]{--bg:#f4f3ef;--surface:#ffffff;--raise:#f0eee8;--fg:#1a1d24;--muted:#646875;--line:#e2e0d9;--accent:#3047b8;--accent-fg:#ffffff;--gold:#8f6b22;--sel:#eaedfa;color-scheme:light}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:14.5px/1.5 var(--body)}
+button,input,select{font-family:inherit}
+.wrap{max-width:1320px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+header .wrap{display:flex;align-items:center;gap:18px;padding-block:20px 8px}
+.logo{font:700 26px var(--display);margin-right:auto;letter-spacing:.01em}
+.logo small{display:block;font:500 11px var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-top:2px}
+.lang{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.lang button{border:0;background:none;color:var(--muted);padding:7px 12px;font-weight:600;font-size:12px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--raise);color:var(--fg)}
+.searchrow{padding-block:14px 22px}
+.search{display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--line);padding:6px 0}
+.search:focus-within{border-color:var(--accent)}
+.search input{flex:1;min-width:0;border:0;background:none;color:var(--fg);font:500 clamp(20px,3vw,28px) var(--display);padding:6px 0;outline:none}
+.search input::placeholder{color:var(--muted)}
+.search .cnt{color:var(--muted);font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.layout{display:grid;grid-template-columns:210px minmax(0,1fr) 340px;gap:28px;align-items:start;padding-bottom:60px}
+nav h3,.pv h3{font:600 11px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+nav{position:sticky;top:16px}
+nav .idx{display:flex;flex-direction:column;margin-bottom:22px}
+nav .idx button{display:flex;justify-content:space-between;gap:8px;text-align:left;border:0;background:none;color:var(--fg);padding:7px 10px;border-radius:7px;cursor:pointer;font-size:14px}
+nav .idx button:hover{background:var(--raise)}
+nav .idx button[aria-pressed="true"]{background:var(--sel);color:var(--accent);font-weight:600}
+nav .n{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12.5px}
+nav select{width:100%;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px}
+.listhead{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.listhead b{font:700 22px var(--display);margin-right:auto}
+.listhead select{background:none;color:var(--muted);border:0;font-size:13px;cursor:pointer}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.item{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;border:0;border-bottom:1px solid var(--line);background:none;color:inherit;text-align:left;padding:10px 14px;cursor:pointer}
+.item:last-child{border-bottom:0}
+.item:hover{background:var(--raise)}
+.item[aria-current="true"]{background:var(--sel);box-shadow:inset 3px 0 0 var(--accent)}
+.item .cover{width:44px;border-radius:3px;box-shadow:none}
+.item .cover.gen *{display:none}
+.it{font-weight:600;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ia{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tags{display:flex;gap:6px;align-items:center;font-size:11.5px;color:var(--muted);white-space:nowrap}
+.tag{border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-weight:600;letter-spacing:.04em}
+.cover{position:relative;aspect-ratio:2/3;max-width:100%;border-radius:4px;overflow:hidden;background-color:var(--raise);background-repeat:no-repeat;box-shadow:0 18px 36px -20px rgba(0,0,0,.7)}
+.cover.gen{background:var(--c);color:#f2ecdf;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;padding:18px}
+.cover .ct{font:700 22px/1.1 var(--display);order:-1;margin-bottom:auto}
+.cover .ca{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.8}
+.more{display:block;width:100%;border:0;border-top:1px solid var(--line);background:none;color:var(--accent);font-weight:600;padding:13px;cursor:pointer}
+.pv{position:sticky;top:16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px}
+.pv .cover{width:170px;margin-bottom:18px}
+.pv h2{font:700 25px/1.12 var(--display);margin:0 0 4px}
+.pv .au{color:var(--muted);margin-bottom:12px}
+.pv .eb{color:var(--gold);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.pv .desc{font-size:14px;max-height:9.5em;overflow:auto}
+.pv dl{display:grid;grid-template-columns:auto 1fr;gap:5px 16px;margin:16px 0 18px;font-size:13.5px}
+.pv dt{color:var(--muted)}.pv dd{margin:0;font-variant-numeric:tabular-nums}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.btn{flex:1;text-align:center;font-weight:600;border-radius:9px;padding:11px 14px;text-decoration:none;border:1px solid var(--accent);font-size:14px;white-space:nowrap}
+.btn.p{background:var(--accent);color:var(--accent-fg)}.btn.g{color:var(--accent)}
+.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
+.hint{color:var(--muted);font-size:12.5px;margin-top:10px}
+.empty{padding:60px 20px;text-align:center;color:var(--muted)}
+.empty b{display:block;font:700 22px var(--display);color:var(--fg)}
+.empty button{margin-top:12px;border:0;background:none;color:var(--accent);font-weight:600;cursor:pointer}
+dialog{border:0;border-radius:16px 16px 0 0;padding:0;margin:auto 0 0;width:100%;max-width:100%;max-height:88dvh;background:var(--surface);color:var(--fg)}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+dialog .pv{position:static;border:0;padding:22px max(20px,env(safe-area-inset-left,0px)) calc(24px + env(safe-area-inset-bottom,0px))}
+dialog .x{float:right;border:0;background:var(--raise);color:var(--fg);width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer}
+@media (max-width:1100px){.layout{grid-template-columns:200px minmax(0,1fr)}.layout>.pv{display:none}}
+@media (max-width:720px){.layout{grid-template-columns:1fr}nav{position:static;display:flex;gap:10px;overflow-x:auto}nav h3,nav .lsel{display:none}nav .idx{flex-direction:row;margin:0}nav .idx button{flex:none;white-space:nowrap;border:1px solid var(--line)}.tags .tag+span{display:none}}
+</style>
+
+<header><div class="wrap">
+  <div class="logo"><span data-k="name"></span><small data-k="tag"></small></div>
+  <div class="lang"><button data-l="ru">RU</button><button data-l="tg">TJ</button></div>
+</div></header>
+<div class="wrap searchrow"><label class="search" for="q"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" autocomplete="off"><span class="cnt" id="cnt"></span></label></div>
+<div class="wrap layout">
+  <nav><h3 data-k="sections"></h3><div class="idx" id="idx"></div><div class="lsel"><h3 data-k="lang"></h3><select id="bl" aria-label="Язык"></select></div></nav>
+  <main><div class="listhead"><b id="lt"></b><select id="sort" aria-label="Сортировка"></select></div><div id="out"></div></main>
+  <aside class="pv" id="pv" aria-live="polite"></aside>
+</div>
+<dialog id="dlg"></dialog>
+
+<script src="core.js"></script>
+<script>
+const {S,L,esc}=LIB,$=id=>document.getElementById(id),PAL=["#2b3a6b","#5a2a33","#2c4a42","#4b3765","#5e4a22","#324250"];
+let shown=60,cur=null;
+const narrow=()=>matchMedia("(max-width:1100px)").matches;
+function preview(b,inDialog){
+  if(!b)return"";const l=L(),k=LIB.links(b);
+  return `${inDialog?`<button class="x" id="dx" aria-label="Закрыть">×</button>`:""}${LIB.cover(b,PAL)}<div class="eb">${l.cats[b.cat]}</div><h2>${esc(b.title)}</h2><div class="au">${esc(b.author||l.unknown)}</div>${b.desc?`<div class="desc">${esc(b.desc)}</div>`:""}
+  <dl>${LIB.meta(b).map(([t,v])=>`<dt>${t}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
+  <div class="acts"><a class="btn p" target="_blank" rel="noopener" href="${k?esc(k.view):"#"}" aria-disabled="${!k}">${l.read}</a><a class="btn g" target="_blank" rel="noopener" href="${k?esc(k.dl):"#"}" aria-disabled="${!k}">${l.dl}</a></div>${k?"":`<div class="hint">${l.soon}</div>`}`;
+}
+function render(){
+  const l=L();
+  document.querySelectorAll("[data-k]").forEach(e=>e.textContent=l[e.dataset.k]);
+  $("q").placeholder=l.search;
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===S.lang));
+  const c=LIB.counts({skipCat:1}),tot=Object.values(c).reduce((a,b)=>a+b,0);
+  $("idx").innerHTML=[["",l.all,tot],...Object.keys(l.cats).filter(k=>c[k]).map(k=>[k,l.cats[k],c[k]])].map(([k,n,x])=>`<button aria-pressed="${S.cat===k}" data-k="${k}">${n}<span class="n">${x}</span></button>`).join("");
+  $("bl").innerHTML=`<option value="">${l.allLangs}</option>`+LIB.langsPresent().map(k=>`<option value="${k}"${S.bl===k?" selected":""}>${l.langs[k]}</option>`).join("");
+  $("sort").innerHTML=[["new",l.sNew],["title",l.sTitle],["author",l.sAuthor]].map(([v,n])=>`<option value="${v}"${S.sort===v?" selected":""}>${n}</option>`).join("");
+  const list=LIB.list();
+  $("lt").textContent=S.cat?l.cats[S.cat]:l.all;$("cnt").textContent=l.books(list.length);
+  if(!list.length){$("out").innerHTML=`<div class="list"><div class="empty"><b>${l.emptyT}</b>${l.emptyD}<br><button id="rs">${l.reset}</button></div></div>`;$("rs").onclick=()=>{S.q="";S.cat="";S.bl="";$("q").value="";render()};$("pv").innerHTML="";return}
+  if(!cur||!list.some(b=>b.id===cur))cur=list[0].id;
+  $("out").innerHTML=`<div class="list">${list.slice(0,shown).map(b=>`<button class="item" data-id="${b.id}" aria-current="${b.id===cur}">${LIB.cover(b,PAL)}<div style="min-width:0"><div class="it">${esc(b.title)}</div><div class="ia">${esc(b.author||l.unknown)}</div></div><div class="tags"><span class="tag">${b.lang.toUpperCase()}</span>${b.pages?`<span>${b.pages} с.</span>`:""}</div></button>`).join("")}${list.length>shown?`<button class="more" id="more">${l.more} · ${list.length-shown}</button>`:""}</div>`;
+  if($("more"))$("more").onclick=()=>{shown+=60;render()};
+  $("pv").innerHTML=preview(LIB.books.find(b=>b.id===cur));
+}
+$("out").onclick=e=>{const it=e.target.closest(".item");if(!it)return;cur=it.dataset.id;
+  document.querySelectorAll(".item").forEach(x=>x.setAttribute("aria-current",x.dataset.id===cur));
+  const b=LIB.books.find(x=>x.id===cur);
+  if(narrow()){$("dlg").innerHTML=`<div class="pv">${preview(b,true)}</div>`;$("dlg").showModal();$("dx").onclick=()=>$("dlg").close()}
+  else $("pv").innerHTML=preview(b)};
+$("dlg").onclick=e=>{if(e.target===$("dlg"))$("dlg").close()};
+$("idx").onclick=e=>{const b=e.target.closest("button");if(b){S.cat=b.dataset.k;shown=60;cur=null;render()}};
+let tm;$("q").oninput=e=>{clearTimeout(tm);tm=setTimeout(()=>{S.q=e.target.value;shown=60;cur=null;render()},120)};
+$("bl").onchange=e=>{S.bl=e.target.value;render()};$("sort").onchange=e=>{S.sort=e.target.value;render()};
+document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{LIB.setLang(b.dataset.l);render()});
+document.addEventListener("keydown",e=>{if(e.key==="/"&&document.activeElement!==$("q")){e.preventDefault();$("q").focus()}});
+LIB.load(render);render();
+</script>
