@@ -1,0 +1,39 @@
+name: Attach books to releases
+on:
+  push:
+    branches: ["upload/**"]
+permissions:
+  contents: write
+concurrency:
+  group: attach-books
+  cancel-in-progress: false
+jobs:
+  attach:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - name: Upload PDFs to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -e
+          TAG="${BRANCH#upload/}"; TAG="${TAG%%-*}"
+          cd books
+          # reassemble files that were split into <100MB parts
+          for first in *.part000; do
+            [ -e "$first" ] || continue
+            base="${first%.part000}"; cat "$base".part* > "$base"; rm "$base".part*
+          done
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            n="${TAG#b}"
+            gh release create "$TAG" --target main --title "Книги, часть $n" --notes "PDF-файлы библиотеки Китобхонаи Азим (часть $n)."
+          fi
+          ls *.pdf | xargs -n 20 gh release upload "$TAG" --clobber
+          echo "Uploaded $(ls *.pdf | wc -l) files to $TAG"
+      - name: Remove upload branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh api -X DELETE "repos/${{ github.repository }}/git/refs/heads/${{ github.ref_name }}"
