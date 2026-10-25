@@ -100,8 +100,9 @@ window.LIB = (function () {
       if (rn.test(qn) || rk.test(qk)) {
         const rxs = g.flatMap(x => [phraseRx(norm(x)), phraseRx(skel(x).trim())]);
         qv.push({ rx: rxs });
-        qn = qn.replace(rn, " "); qk = qk.replace(rk, " ");
-        pn.split(/\s+/).forEach(w => { qn = qn.replace(new RegExp(" " + esc2(w) + "\\S*"), " "); });
+        qk = qk.replace(rk, " ");
+        PHR[i].forEach(p2 => { qn = qn.replace(phraseRx(norm(p2)), " "); });
+        PHR[i].forEach(p2 => norm(p2).split(/\s+/).forEach(w => { qn = qn.replace(new RegExp(" " + esc2(stem(w)) + "\\S*"), " "); }));
       }
     }));
     qn.trim().split(/\s+/).filter(Boolean).forEach(w => { const r = variants(w); qv.push({ v: r.v, rx: r.g.flatMap(i => PHR[i].flatMap(p => [phraseRx(norm(p)), phraseRx(skel(p).trim())])) }); });
