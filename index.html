@@ -361,7 +361,6 @@ function openBook(id,push=true){
   openId=id;fillPage(b);
   if(push)history.pushState({book:id},"","#book-"+id);
   $("page").scrollTop=0;$("page").classList.add("on");document.body.style.overflow="hidden";
-  setTimeout(()=>$("back")?.focus({preventScroll:true}),280);
 }
 function closeBook(){openId=null;$("page").classList.remove("on");document.body.style.overflow=""}
 addEventListener("popstate",()=>{const m=location.hash.match(/^#book-(\d+)$/);if(m)openBook(m[1],false);else{closeBook();closeSheet(false)}});
