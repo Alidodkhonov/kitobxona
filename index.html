@@ -415,6 +415,7 @@ function render(){
   $("sort").innerHTML=[["new",l.sNew],["title",l.sTitle],["author",l.sAuthor]].map(([v,n])=>`<option value="${v}"${S.sort===v?" selected":""}>${n}</option>`).join("");
   $("savedN").textContent=saved.size||"";$("savedSide").setAttribute("aria-pressed",savedOnly);
   $("savedDot").hidden=!saved.size;$("savedDot").textContent=saved.size;
+  if(!LIB.books.length&&LIB.failed){$("out").innerHTML=`<div class="empty">${SYM}<b>${l.errT}</b>${l.errD}<br><button id="retry">${l.retry}</button></div>`;$("retry").onclick=boot;$("lt").textContent=l.all;$("cnt").textContent="";updateTabs();return}
   if(!LIB.books.length){$("out").innerHTML=`<div class="loading">${SYM.replace('class="sym "','class="sym loop"')}<span>${S.lang==="tg"?"Боргирӣ…":"Загрузка…"}</span></div>`;$("lt").textContent=l.all;$("cnt").textContent="";updateTabs();return}
   const list=currentList();
   $("footN").textContent="· "+l.books(LIB.books.length);
@@ -440,7 +441,7 @@ function render(){
 let openId=null;
 function fillPage(b){
   const l=L(),xx=x();
-  const bg=b.cv?`background-image:url(covers/c${b.cv[0]}.jpg);background-size:1000% ${b.cv[3]*100}%;background-position:${b.cv[1]/9*100}% ${b.cv[3]>1?b.cv[2]/(b.cv[3]-1)*100:0}%`:`background:${PAL[0]}`;
+  const bg=b.cv?LIB.coverBg(b):`background:${PAL[0]}`;
   $("page").innerHTML=`<div class="page-bar"><button class="back" id="back">${icon("back")}${xx.back}</button>${shareBtn(b)}</div>
    <div class="hero"><div class="bgblur" style="${bg}"></div>${LIB.cover(b,PAL)}</div><div class="bk">${bookBody(b,true)}</div>`;
   $("actionbar").innerHTML=`${readBtn(b,"p")}${dlBtn(b,"")}${saveBtn(b)}`;
@@ -525,7 +526,10 @@ let lastPhone=phone();addEventListener("resize",()=>{if(phone()!==lastPhone){las
 (function(){const it=$("intro");let seen=false;try{seen=sessionStorage.getItem("intro")==="1";sessionStorage.setItem("intro","1")}catch(e){}
   if(seen||matchMedia("(prefers-reduced-motion:reduce)").matches||location.hash.startsWith("#book-"))return;
   it.hidden=false;const done=()=>{it.classList.add("out");setTimeout(()=>it.remove(),600)};const t=setTimeout(done,2300);it.onclick=()=>{clearTimeout(t);done()}})();
-LIB.load(()=>{render();const m=location.hash.match(/^#book-(\d+)$/);if(m&&byId(m[1])){history.replaceState(null,"",location.pathname);openBook(m[1])}});
+function boot(){LIB.load(onBooks);render()}
+addEventListener("online",()=>{if(LIB.failed)boot()});
+boot();
+function onBooks(){render();const m=location.hash.match(/^#book-(\d+)$/);if(m&&byId(m[1])){history.replaceState(null,"",location.pathname);openBook(m[1])}}
 render();
 if("serviceWorker" in navigator&&location.protocol==="https:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>

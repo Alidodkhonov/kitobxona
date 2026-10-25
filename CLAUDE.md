@@ -17,8 +17,8 @@ Interface in Russian (default) with a Tajik toggle. Owner: Afraz Alidodkhonov.
 | PDFs | GitHub **releases** `b1`–`b4` (300 books each) | URL `https://github.com/Alidodkhonov/kitobxona/releases/download/b{N}/{id}.pdf`. Not in the git tree. |
 | Reader | `reader.html` + `vendor/pdfjs/` (PDF.js 3.11.174 legacy) | Loads `/api/pdf?t=bN&id=ID`. Modes: original / night / sepia / day; zoom; resume position. |
 | PDF relay | `api/pdf.js` (Vercel Edge function) | GitHub release files have no CORS, so this forwards them with Range support. Only runs on Vercel. |
-| Covers | `covers/c0.jpg`–`c8.jpg` sprite sheets | `cv: [sheet, col, row, rows]`; books without a cover get a generated cloth cover (`PAL` in index.html). |
-| Offline / app | `sw.js`, `manifest.webmanifest`, `icons/`, `favicon.svg/.ico` | **Bump `CACHE` in sw.js whenever shipped files change**, or visitors keep the old version. |
+| Covers | `covers/s{sheet}-{row}.webp` + `.jpg` fallback, one strip of 10 covers each | `cv: [sheet, col, row, rows]` (`coverBg()` in core.js). Strips keep slow connections to ~27 KB per row on screen; cut from the original 10×10 sheets (in git history before `fix/slow-connection`). Books without a cover get a generated cloth cover (`PAL` in index.html). |
+| Offline / app | `sw.js`, `manifest.webmanifest`, `icons/`, `favicon.svg/.ico` | Page and `books.json` are served from the saved copy first and refreshed in the background, so a change reaches a visitor on their second visit. **Bump `CACHE` in sw.js whenever shipped files change**, or visitors keep the old version. |
 | Uploading new books | `.github/workflows/attach-books.yml` | Push a branch named `upload/b<N>-<anything>` whose `books/` folder holds `<id>.pdf` files; the workflow attaches them to release `b<N>` (creating it if needed) and deletes the branch. Files over 95 MB: `split -b 90m -d -a 3 x.pdf x.pdf.part` (parts `.part000`…), the workflow joins them. Then add the records to `books.json`. |
 | Brand | `brand/` | Logos, favicons, fonts, animations, generators. Excluded from the deployment by `.vercelignore`. |
 

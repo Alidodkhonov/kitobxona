@@ -10,6 +10,7 @@ window.LIB = (function () {
       read: "Открыть PDF", dl: "Скачать", dlPdf: "Скачать PDF", soon: "Ссылка на файл появится после загрузки книг.",
       author: "Автор", year: "Год", pages: "Страниц", size: "Размер", mb: "МБ", lang: "Язык", cat: "Раздел",
       emptyT: "Ничего не найдено", emptyD: "Попробуйте другое слово или сбросьте фильтры.", reset: "Сбросить",
+      errT: "Нет связи", errD: "Не удалось загрузить каталог. Проверьте интернет и попробуйте снова.", retry: "Повторить",
       results: n => `Найдено: ${n}`, unknown: "Автор не указан", sections: "Разделы", featured: "Избранное собрание",
       cats: { pamir: "Памир и Бадахшан", history: "История", philosophy: "Философия", religion: "Религия", poetry: "Поэзия", ethno: "Этнография и фольклор", language: "Языкознание", prose: "Проза", science: "Наука и общество", other: "Разное" },
       langs: { ru: "Русский", tg: "Таджикский", fa: "Персидский", en: "Английский", other: "Другой" }
@@ -23,6 +24,7 @@ window.LIB = (function () {
       read: "Кушодани PDF", dl: "Боргирӣ", dlPdf: "Боргирии PDF", soon: "Пайванди файл пас аз боргузории китобҳо пайдо мешавад.",
       author: "Муаллиф", year: "Сол", pages: "Саҳифа", size: "Ҳаҷм", mb: "МБ", lang: "Забон", cat: "Бахш",
       emptyT: "Ҳеҷ чиз ёфт нашуд", emptyD: "Калимаи дигарро санҷед ё филтрҳоро бекор кунед.", reset: "Бекор кардан",
+      errT: "Пайваст нест", errD: "Феҳрист боргирӣ нашуд. Интернетро санҷед ва боз кӯшиш кунед.", retry: "Боз кӯшиш",
       results: n => `Ёфт шуд: ${n}`, unknown: "Муаллиф нишон дода нашудааст", sections: "Бахшҳо", featured: "Маҷмӯаи интихобӣ",
       cats: { pamir: "Помир ва Бадахшон", history: "Таърих", philosophy: "Фалсафа", religion: "Дин", poetry: "Назм", ethno: "Мардумшиносӣ ва фолклор", language: "Забоншиносӣ", prose: "Наср", science: "Илм ва ҷомеа", other: "Гуногун" },
       langs: { ru: "Русӣ", tg: "Тоҷикӣ", fa: "Форсӣ", en: "Англисӣ", other: "Дигар" }
@@ -72,14 +74,15 @@ window.LIB = (function () {
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const hash = s => { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0; return Math.abs(h); };
   const S = { lang: store.get("lang", "ru"), q: "", cat: "", bl: "", sort: "new" };
-  let BOOKS = [];
+  let BOOKS = [], failed = false;
   const L = () => T[S.lang];
 
   function load(cb) {
-    fetch("books.json").then(r => r.json()).then(d => {
+    failed = false;
+    fetch("books.json").then(r => { if (!r.ok) throw r.status; return r.json(); }).then(d => {
       BOOKS = d.map(b => { const txt = [b.title, b.author, b.desc, b.year, T.ru.cats[b.cat], T.tg.cats[b.cat], T.ru.langs[b.lang], T.tg.langs[b.lang]].join(" "); return { ...b, _s: clean(norm(txt)) + clean(skel(txt)) }; });
       cb();
-    }).catch(() => cb());
+    }).catch(() => { failed = true; cb(); });
   }
   function matches(b, o = {}) {
     if (!o.skipCat && S.cat && b.cat !== S.cat) return false;
@@ -116,11 +119,15 @@ window.LIB = (function () {
   function counts(o) { prepQuery(); const c = {}; BOOKS.filter(b => matches(b, o)).forEach(b => c[b.cat] = (c[b.cat] || 0) + 1); return c; }
   function langsPresent() { return [...new Set(BOOKS.map(b => b.lang))]; }
 
-  /* covers: real Telegram cover from sprite sheet, else a generated cloth cover */
+  /* covers: real Telegram cover from a one-row strip of 10 (covers/s{sheet}-{row}, WebP with JPEG fallback),
+     so a slow connection only downloads the rows on screen; else a generated cloth cover */
+  function coverBg(b) {
+    const [s, c, r] = b.cv, f = `covers/s${s}-${r}`;
+    return `background-image:url(${f}.jpg);background-image:image-set(url(${f}.webp) type('image/webp'),url(${f}.jpg) type('image/jpeg'));background-size:1000% 100%;background-position:${c / 9 * 100}% 0`;
+  }
   function cover(b, palette) {
     if (b.cv) {
-      const [s, c, r, rows] = b.cv;
-      return `<div class="cover img" role="img" aria-label="${esc(b.title)}" style="background-image:url(covers/c${s}.jpg);background-size:1000% ${rows * 100}%;background-position:${c / 9 * 100}% ${rows > 1 ? r / (rows - 1) * 100 : 0}%"></div>`;
+      return `<div class="cover img" role="img" aria-label="${esc(b.title)}" style="${coverBg(b)}"></div>`;
     }
     const col = palette[hash(b.title + b.author) % palette.length];
     return `<div class="cover gen" style="--c:${col}"><span class="ca">${esc(b.author)}</span><span class="ct">${esc(b.title)}</span></div>`;
@@ -137,5 +144,5 @@ window.LIB = (function () {
   }
   function setLang(x) { S.lang = x; store.set("lang", x); document.documentElement.lang = x; }
   document.documentElement.lang = S.lang;
-  return { T, S, L, load, list, counts, langsPresent, cover, links, meta, setLang, esc, get books() { return BOOKS; } };
+  return { T, S, L, load, list, counts, langsPresent, cover, coverBg, links, meta, setLang, esc, get books() { return BOOKS; }, get failed() { return failed; } };
 })();
