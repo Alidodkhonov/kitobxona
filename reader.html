@@ -45,7 +45,8 @@ body.immersive .botbar{transform:translateY(110%)}
 .zoomgrp{display:flex;align-items:center;gap:2px}
 .zv{min-width:48px;text-align:center;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;border:0;background:none;padding:6px 2px}
 
-#viewer{padding:calc(70px + env(safe-area-inset-top,0px)) 0 calc(90px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:14px;min-height:100vh;overflow-x:auto}
+#viewer{padding:calc(70px + env(safe-area-inset-top,0px)) 6px calc(90px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-height:100vh;width:max-content;min-width:100%}
+.page{margin-inline:auto}
 .page{position:relative;background:#fff;box-shadow:var(--paper-shadow);flex:none;max-width:none}
 .page canvas{display:block;width:100%;height:100%}
 .page .num{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#b5b5b5;font:600 14px var(--body)}
@@ -113,19 +114,19 @@ dialog input{width:100%;font-size:18px;padding:10px 12px;border-radius:10px;bord
 <script>
 const T={
   ru:{loading:"Открываем книгу…",loadingD:"Большие книги загружаются постранично — первые страницы появятся через несколько секунд.",err:"Не удалось открыть книгу",errD:"Проверьте подключение к интернету и попробуйте ещё раз, или скачайте файл.",retry:"Повторить",dl:"Скачать",notFound:"Книга не найдена",notFoundD:"Ссылка устарела или книга удалена.",toLib:"В библиотеку",
-      resume:p=>`Продолжить со стр. ${p}?`,yes:"Да",goto:"Перейти к странице",cancel:"Отмена",go:"Перейти",of:"из",modes:{night:"Ночной режим",sepia:"Режим сепия",day:"Дневной режим"}},
+      resume:p=>`Продолжить со стр. ${p}?`,yes:"Да",goto:"Перейти к странице",cancel:"Отмена",go:"Перейти",of:"из",modes:{original:"Оригинал",night:"Ночной режим (инверсия)",sepia:"Режим сепия",day:"Дневной режим"}},
   tg:{loading:"Китоб кушода мешавад…",loadingD:"Китобҳои калон саҳифа ба саҳифа бор мешаванд — саҳифаҳои аввал пас аз чанд сония пайдо мешаванд.",err:"Китобро кушодан нашуд",errD:"Пайвасти интернетро санҷед ва боз кӯшиш кунед, ё файлро боргирӣ кунед.",retry:"Аз нав",dl:"Боргирӣ",notFound:"Китоб ёфт нашуд",notFoundD:"Пайванд кӯҳна шудааст ё китоб нест карда шудааст.",toLib:"Ба китобхона",
-      resume:p=>`Аз саҳ. ${p} идома диҳем?`,yes:"Ҳа",goto:"Гузаштан ба саҳифа",cancel:"Бекор",go:"Гузаштан",of:"аз",modes:{night:"Реҷаи шабона",sepia:"Реҷаи сепия",day:"Реҷаи рӯзона"}}
+      resume:p=>`Аз саҳ. ${p} идома диҳем?`,yes:"Ҳа",goto:"Гузаштан ба саҳифа",cancel:"Бекор",go:"Гузаштан",of:"аз",modes:{original:"Асл",night:"Реҷаи шабона",sepia:"Реҷаи сепия",day:"Реҷаи рӯзона"}}
 };
 const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const lang=store.get("lang","ru")==="tg"?"tg":"ru",t=T[lang];document.documentElement.lang=lang;
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search),id=(params.get("b")||"").replace(/\D/g,"");
-let mode=store.get("readerMode","night");document.documentElement.dataset.mode=mode;
-const MODES=["night","sepia","day"];
-const ICONS={night:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',sepia:'<path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2v.5zM4 19.5A2 2 0 0 0 6 21h14"/>',day:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'};
-function setMode(m){mode=m;document.documentElement.dataset.mode=m;store.set("readerMode",m);$("mode").querySelector("svg").innerHTML=ICONS[m];$("mode").setAttribute("aria-label",t.modes[m]);
-  document.querySelector('meta[name="theme-color"]').content=m==="night"?"#13161c":m==="sepia"?"#f3ead6":"#ffffff"}
+let mode=store.get("readerMode2","original");if(!["original","night","sepia","day"].includes(mode))mode="original";document.documentElement.dataset.mode=mode;
+const MODES=["original","night","sepia","day"];
+const ICONS={original:'<path d="M4 4h16v16H4z"/><path d="M4 15l4-4 5 5 3-3 4 4"/><circle cx="15.5" cy="8.5" r="1.5"/>',night:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',sepia:'<path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2v.5zM4 19.5A2 2 0 0 0 6 21h14"/>',day:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'};
+function setMode(m){mode=m;document.documentElement.dataset.mode=m;store.set("readerMode2",m);$("mode").querySelector("svg").innerHTML=ICONS[m];$("mode").setAttribute("aria-label",t.modes[m]);
+  document.querySelector('meta[name="theme-color"]').content=(m==="night"||m==="original")?"#13161c":m==="sepia"?"#f3ead6":"#ffffff"}
 setMode(mode);
 $("mode").onclick=()=>{setMode(MODES[(MODES.indexOf(mode)+1)%3]);toast(t.modes[mode])};
 $("dlLbl").textContent=t.dl;
@@ -155,6 +156,7 @@ async function start(){
   document.title=book.title+" · Китобхонаи Азим";
   $("tt").textContent=book.title;$("ta").textContent=book.author||"";
   $("dl").href=book.file;
+  if(book.mb>40){const p=document.querySelector("#state p");if(p)p.textContent=t.loadingD+" ("+book.mb+" MB)"}
   if(!m){showState("error",book.file);return}
   const src=`/api/pdf?t=${m[1]}&id=${m[2]}`;
   try{
@@ -231,7 +233,7 @@ $("goto").addEventListener("close",()=>{if($("goto").returnValue==="ok"){const n
 function setZoom(z){const keep=curPage,off=(()=>{const r=pages[keep-1]?.el.getBoundingClientRect();return r?(72-r.top)/r.height:0})();
   zoom=Math.max(.5,Math.min(3,Math.round(z*10)/10));store.set("readerZoom",zoom);layout();
   pages.forEach(p=>{if(p.rendered)p.rendered=-1});
-  const p=pages[keep-1];if(p)scrollTo({top:p.el.offsetTop+off*p.el.offsetHeight-72});
+  const p=pages[keep-1];if(p)scrollTo({top:p.el.offsetTop+off*p.el.offsetHeight-72,left:Math.max(0,(document.documentElement.scrollWidth-innerWidth)/2)});
   pages.forEach(p=>{const r=p.el.getBoundingClientRect();if(r.bottom>-innerHeight*2&&r.top<innerHeight*3)render(p)});}
 $("zin").onclick=()=>setZoom(zoom+.2);$("zout").onclick=()=>setZoom(zoom-.2);$("zv").onclick=()=>setZoom(1);
 let lastW=document.documentElement.clientWidth;addEventListener("resize",()=>{const w=document.documentElement.clientWidth;if(Math.abs(w-lastW)<30||!pages.length)return;lastW=w;computeFit();setZoom(zoom)});
