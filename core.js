@@ -34,6 +34,41 @@ window.LIB = (function () {
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
   };
   const norm = s => (s || "").toLowerCase().replace(/ё/g, "е").replace(/ӣ/g, "и").replace(/ӯ/g, "у").replace(/ҳ/g, "х").replace(/қ/g, "к").replace(/ғ/g, "г").replace(/ҷ/g, "ч");
+  /* phonetic skeleton: makes Russian, Tajik and Latin spellings of the same word meet */
+  const TR = { а:"a",б:"b",в:"v",г:"g",д:"d",е:"e",ж:"zh",з:"z",и:"i",й:"i",к:"k",л:"l",м:"m",н:"n",о:"o",п:"p",р:"r",с:"s",т:"t",у:"u",ф:"f",х:"h",ц:"ts",ч:"ch",ш:"sh",щ:"sh",ъ:"",ы:"i",ь:"",э:"e",ю:"yu",я:"ya","ʼ":"","’":"","'":"" };
+  const skel = s => norm(s).replace(/[а-яъь'’ʼ]/g, c => TR[c] ?? c)
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/dzh|dj/g, "j").replace(/kh/g, "h").replace(/gh/g, "g").replace(/q/g, "k").replace(/w/g, "v")
+    .replace(/[yj](?=[aeiou])/g, m => m === "j" ? "j" : "")
+    .replace(/o/g, "a").replace(/e/g, "i").replace(/y/g, "i").replace(/v/g, "u")
+    .replace(/([a-z])\1+/g, "$1").replace(/[^a-z0-9؀-ۿ ]+/g, " ");
+  /* names and words that are spelled very differently across languages */
+  const SYN = [
+    "фирдавси|фирдоуси|фирдавсӣ|ferdowsi|firdausi|firdawsi|فردوسی","шахнаме|шахнама|шоҳнома|shahnameh|shahnama|shohnoma|شاهنامه",
+    "хайям|хайём|khayyam|khayyām|خیام","руми|румӣ|rumi|mevlana|mawlana|мавлоно|мевляна|مولانا","носири хусрав|насир хусрав|насир хосров|насир-и хусрав|nasir khusraw|nasir khusrau|nasir-i khusraw|ناصر خسرو",
+    "ибн сина|ибни сино|авиценна|avicenna|ibn sina|ابن سینا","рудаки|рӯдакӣ|rudaki|رودکی","хафиз|ҳофиз|hafez|hafiz|حافظ","саади|саъдӣ|сади|saadi|sadi|سعدی",
+    "аттар|аттор|attar|عطار","джами|ҷомӣ|jami|جامی","бедил|bedil|بیدل","низами|низомӣ|nizami|نظامی","навои|навоӣ|navoi|navai","айни|айнӣ|aini|ayni",
+    "бадахшан|бадахшон|badakhshan|бадахшанский|бадахшӣ","памир|помир|pamir|памирский|помирӣ","исмаилит|исмоилия|исмаили|ismaili|ismaʿili","ага хан|ога хон|aga khan|agha khan",
+    "авеста|авесто|авасто|avesta","зардушт|заратустра|зороастр|zoroaster|zarathustra","навруз|наврӯз|новруз|nowruz|navruz|نوروز",
+    "таджик|тоҷик|tajik|تاجیک","шугнан|шуғнон|shughni|shugnan","вахан|вахон|wakhan|wakhi","рушан|рӯшон|rushan","бухара|бухоро|bukhara","самарканд|самарқанд|samarkand|samarqand",
+    "согд|суғд|sogd|sogdian","история|таърих|history|tarikh|تاریخ","язык|забон|language","словарь|луғат|фарҳанг|dictionary|lughat","сказки|афсона|афсонаҳо|tales|fairy",
+    "поэзия|стихи|шеър|назм|ашъор|poetry|poems","философия|фалсафа|philosophy","религия|дин|religion","суфизм|тасаввуф|суфи|sufism|sufi","коран|қуръон|quran|koran|قرآن",
+    "этнография|мардумшиносӣ|ethnography","археология|бостоншиносӣ|archaeology","архитектура|меъморӣ|architecture"
+  ].map(g => g.split("|"));
+  const SYNSK = SYN.map(g => g.map(skel).map(x => x.trim()).filter(Boolean));
+  const clean = s => " " + s.replace(/[^\p{L}\p{N}]+/gu, " ").replace(/\s+/g, " ").trim() + " ";
+  const SYNW = SYN.map(g => g.filter(x => !/\s/.test(x.trim())).map(norm));
+  const SYNWK = SYNW.map(ws => ws.map(w => skel(w).trim()));
+  function variants(w) {
+    const n = norm(w).replace(/[^\p{L}\p{N}]/gu, ""), k = skel(w).replace(/\s/g, "");
+    const out = new Set([n]), groups = [];
+    if (k.length >= Math.min(3, n.length)) out.add(k);
+    if (n.length >= 3) SYN.forEach((g, i) => {
+      const hit = SYNW[i].some(x => x.length >= 3 && (x.startsWith(n) || (n.length >= 4 && n.startsWith(x)))) || (k.length >= 3 && SYNWK[i].some(y => y.length >= 3 && (y.startsWith(k) || (k.length >= 4 && k.startsWith(y)))));
+      if (hit) { SYNW[i].forEach(x => x.length >= 3 && out.add(x)); SYNWK[i].forEach(y => y.length >= 3 && out.add(y)); groups.push(i); }
+    });
+    return { v: [...out].filter(Boolean), g: groups };
+  }
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const hash = s => { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0; return Math.abs(h); };
   const S = { lang: store.get("lang", "ru"), q: "", cat: "", bl: "", sort: "new" };
@@ -42,22 +77,42 @@ window.LIB = (function () {
 
   function load(cb) {
     fetch("books.json").then(r => r.json()).then(d => {
-      BOOKS = d.map(b => ({ ...b, _s: norm([b.title, b.author, b.desc, b.year, b.fname].join(" ")) }));
+      BOOKS = d.map(b => { const txt = [b.title, b.author, b.desc, b.year, T.ru.cats[b.cat], T.tg.cats[b.cat], T.ru.langs[b.lang], T.tg.langs[b.lang]].join(" "); return { ...b, _s: clean(norm(txt)) + clean(skel(txt)) }; });
       cb();
     }).catch(() => cb());
   }
   function matches(b, o = {}) {
     if (!o.skipCat && S.cat && b.cat !== S.cat) return false;
     if (S.bl && b.lang !== S.bl) return false;
-    const q = norm(S.q).trim().split(/\s+/).filter(Boolean);
-    return q.every(w => b._s.includes(w));
+    return qv.every(c => (c.v && c.v.some(v => b._s.includes(" " + v))) || (c.rx && c.rx.some(r => r.test(b._s))));
+  }
+  let qv = [], qlast = null;
+  const esc2 = x => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const stem = w => w.length >= 4 ? w.replace(/[аеиоуыяэюёaeiou]$/u, "") : w;
+  const phraseRx = p => new RegExp(" " + p.trim().split(/\s+/).map(w => esc2(stem(w))).join("\\S* ") + "\\S*");
+  const PHR = SYN.map(g => g.filter(x => /\s/.test(x.trim())));
+  function prepQuery() {
+    if (S.q === qlast) return; qlast = S.q; qv = [];
+    let qn = " " + norm(S.q).replace(/[^\p{L}\p{N}]+/gu, " ") + " ", qk = " " + skel(S.q).replace(/\s+/g, " ") + " ";
+    SYN.forEach((g, i) => PHR[i].forEach(p => {
+      const pn = norm(p), pk = skel(p).trim();
+      const rn = phraseRx(pn), rk = phraseRx(pk);
+      if (rn.test(qn) || rk.test(qk)) {
+        const rxs = g.flatMap(x => [phraseRx(norm(x)), phraseRx(skel(x).trim())]);
+        qv.push({ rx: rxs });
+        qn = qn.replace(rn, " "); qk = qk.replace(rk, " ");
+        pn.split(/\s+/).forEach(w => { qn = qn.replace(new RegExp(" " + esc2(w) + "\\S*"), " "); });
+      }
+    }));
+    qn.trim().split(/\s+/).filter(Boolean).forEach(w => { const r = variants(w); qv.push({ v: r.v, rx: r.g.flatMap(i => PHR[i].flatMap(p => [phraseRx(norm(p)), phraseRx(skel(p).trim())])) }); });
   }
   function list(o) {
+    prepQuery();
     const loc = S.lang, out = BOOKS.filter(b => matches(b, o));
     const cmp = { title: (a, b) => a.title.localeCompare(b.title, loc), author: (a, b) => (a.author || "яяя").localeCompare(b.author || "яяя", loc), new: (a, b) => b.added - a.added };
     return out.sort(cmp[S.sort] || cmp.new);
   }
-  function counts(o) { const c = {}; BOOKS.filter(b => matches(b, o)).forEach(b => c[b.cat] = (c[b.cat] || 0) + 1); return c; }
+  function counts(o) { prepQuery(); const c = {}; BOOKS.filter(b => matches(b, o)).forEach(b => c[b.cat] = (c[b.cat] || 0) + 1); return c; }
   function langsPresent() { return [...new Set(BOOKS.map(b => b.lang))]; }
 
   /* covers: real Telegram cover from sprite sheet, else a generated cloth cover */
