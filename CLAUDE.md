@@ -17,7 +17,7 @@ Interface in Russian (default) with a Tajik toggle. Owner: Afraz Alidodkhonov.
 | PDFs | GitHub **releases** `b1`–`b4` (300 books each) | URL `https://github.com/Alidodkhonov/kitobxona/releases/download/b{N}/{id}.pdf`. Not in the git tree. |
 | Reader | `reader.html` + `vendor/pdfjs/` (PDF.js 3.11.174 legacy) | Loads `/api/pdf?t=bN&id=ID`. Modes: original / night / sepia / day; zoom; resume position. |
 | PDF relay | `api/pdf.js` (Vercel Edge function) | GitHub release files have no CORS, so this forwards them with Range support. Only runs on Vercel. |
-| Covers | `covers/s{sheet}-{row}.webp` + `.jpg` fallback, one strip of 10 covers each | `cv: [sheet, col, row, rows]` (`coverBg()` in core.js). Strips keep slow connections to ~27 KB per row on screen; cut from the original 10×10 sheets (in git history before `fix/slow-connection`). Books without a cover get a generated cloth cover (`PAL` in index.html). |
+| Covers | `cover()` in core.js + `.cover.gen` styles in index.html | Every book gets the same designed cloth cover (owner's choice, the scanned Telegram covers were too uneven): colour by section (`CLOTH`), gold frame, Chorkhona ornament, section, title, author, year. Text is sized in `cqw`, so one cover works from the 34 px list thumbnail (cloth + ornament only) to the book page. The old photo strips `covers/s*` are no longer used; `cv` in books.json is kept in case they come back. |
 | Offline / app | `sw.js`, `manifest.webmanifest`, `icons/`, `favicon.svg/.ico` | Page and `books.json` are served from the saved copy first and refreshed in the background, so a change reaches a visitor on their second visit. **Bump `CACHE` in sw.js whenever shipped files change**, or visitors keep the old version. |
 | Uploading new books | `.github/workflows/attach-books.yml` | Push a branch named `upload/b<N>-<anything>` whose `books/` folder holds `<id>.pdf` files; the workflow attaches them to release `b<N>` (creating it if needed) and deletes the branch. Files over 95 MB: `split -b 90m -d -a 3 x.pdf x.pdf.part` (parts `.part000`…), the workflow joins them. Then add the records to `books.json`. |
 | Brand | `brand/` | Logos, favicons, fonts, animations, generators. Excluded from the deployment by `.vercelignore`. |
@@ -39,6 +39,14 @@ prefix on a cleaned index `_s`. Short queries are length-gated to avoid noise. T
   dark theme ground `#0F1A15`. Proportion ≈ 60 white / 30 green / 10 gold.
 - Fonts: Cormorant Garamond 700/600 for the name, headings and book titles; Golos Text 400–600 for all UI.
   Both cover every Tajik letter.
+- Proportions (owner's choice, keep them): sizes come from the tokens at the top of index.html. Type `--t1`…`--t8`
+  = 11 13 15 18 21 25 29 34 (golden-ratio steps, every third a Fibonacci number); spacing `--s1`…`--s7` =
+  3 5 8 13 21 34 55; radii 8 / 13 / 21; controls 47 px high; search 610 px wide. Use these, not new numbers.
+- Header pattern: Chorkhona (Pamiri skylight) tile, tone on tone, faded behind logo and search.
+- Footer: green band with the girih star-and-cross pattern, logo and name, book count and «Наверх» (no collection name, owner's choice).
+- The list shows books in batches of 34 (`PAGE`) with a progress bar and «Показать ещё»; no endless scrolling
+  (owner's choice), so the footer is always reachable. Other studied
+  options are in `brand/patterns/header-patterns.html`.
 - **Main logo = the arch**: the К monogram (spine = book, upper gold fan = pages being read, lower green fan =
   pages read) inside a pointed arch. Light mode: green arch. Dark mode and on green: warm-white arch.
   The inline SVG uses CSS variables `--lg-*` so one markup serves both themes (`.onband` forces the white arch).
@@ -50,6 +58,9 @@ prefix on a cleaned index `_s`. Short queries are length-gated to avoid noise. T
   loading indicator, also in the reader.
 - The owner removed the tagline «Электронная библиотека редких книг» from the animations and the header; don't
   add it back there.
+- Under the search sits Firdawsi's verse «Тавоно бувад ҳар ки доно бувад, зи дониш дили пир барно бувад» (owner's
+  choice, `.verse`): the couplet in «», «— Фирдавсӣ —» centred below, in Tajik in both languages; it folds away
+  when the page scrolls.
 - Full brand rules: `brand/design-system/README.md`, tokens in `brand/design-system/tokens.json`.
 
 ## Working on it

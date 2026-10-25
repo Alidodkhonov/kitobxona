@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header Patterns</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Golos+Text:wght@400;500;600&display=swap">
+<style>
+/* Китобхонаи Азим — header pattern study. Each card is the real header (logo, language switch, search)
+   with a traditional pattern drawn as an SVG tile in the brand greens. */
+:root{
+  --bg:#FAF8F3; --fg:#12201A; --muted:#5D6A63; --line:#E5E1D6; --surface:#FFFFFF; --accent:#1F4D3A; --gold:#8F6B22; --gold-500:#C9A24A;
+  --band-fg:#FAF8F3; --band-muted:#B9CDBF; --field:#FFFFFF; --field-fg:#12201A;
+  --display:"Cormorant Garamond",Georgia,serif; --body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1A15; --fg:#ECE8DF; --muted:#9AA9A0; --line:#24372D; --surface:#15231C; --accent:#9CC5AD; --gold:#C9A24A; --field:#243B2F; --field-fg:#ECE8DF; color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A15; --fg:#ECE8DF; --muted:#9AA9A0; --line:#24372D; --surface:#15231C; --accent:#9CC5AD; --gold:#C9A24A; --field:#243B2F; --field-fg:#ECE8DF; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 var(--body)}
+.onband{--lg-arch:#FAF8F3; --lg-stem:#1F4D3A; --lg-band:#FAF8F3; --lg-sep:#FAF8F3; --lg-l0:#1F4D3A; --lg-l1:#2E6B4F; --lg-l2:#4F8A6B}
+.page{max-width:1240px;margin:0 auto;padding:40px 24px 80px}
+h1{font:700 44px/1.05 var(--display);margin:0 0 8px}
+.lede{color:var(--muted);max-width:720px;margin:0 0 26px}
+.controls{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;padding:14px 0;margin-bottom:12px;
+  background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.controls .lbl{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pills button{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:6px 12px 6px 7px;font:500 13px var(--body);cursor:pointer}
+.pills button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.pills .dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--gold-500)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer}
+.toggle input{accent-color:#1F4D3A;width:16px;height:16px}
+
+.card{padding:30px 0 34px;border-bottom:1px solid var(--line)}
+.head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;margin-bottom:6px}
+.num{font:600 13px var(--body);color:var(--gold);letter-spacing:.08em}
+.head h2{font:700 30px/1.1 var(--display);margin:0}
+.head .tj{color:var(--muted);font-size:14px}
+.card p{margin:0 0 16px;color:var(--muted);max-width:780px}
+.shots{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+.shot{border-radius:14px;overflow:hidden;box-shadow:0 18px 40px -26px rgba(18,32,26,.55);border:1px solid var(--line);background:var(--bg)}
+.shot .below{height:46px;background:var(--bg);display:flex;gap:8px;align-items:center;padding:0 18px}
+.shot .below i{height:26px;border-radius:999px;background:var(--line);display:block}
+.cap{font-size:12px;color:var(--muted);margin-top:6px;text-align:center}
+
+/* the real header, as in index.html */
+.band{color:var(--band-fg);position:relative;border-bottom:3px solid var(--gold-500);background-color:var(--pbg)}
+.brandrow{height:84px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:0 24px}
+.logo{grid-column:2;display:flex;align-items:center;gap:14px;border:0;background:none;padding:6px 8px;color:var(--band-fg)}
+.logo .sym{width:40px}
+.logo b{font:700 34px/1 var(--display);letter-spacing:.01em;white-space:nowrap}
+.seg{grid-column:3;justify-self:end;display:flex;border:1px solid rgba(250,248,243,.28);border-radius:999px;overflow:hidden}
+.seg span{color:var(--band-muted);padding:7px 14px;font-weight:600;font-size:12.5px;letter-spacing:.06em}
+.seg span:first-child{background:var(--band-fg);color:#1F4D3A}
+.searchbar{padding:4px 24px 26px}
+.search{display:flex;align-items:center;gap:12px;max-width:760px;margin:0 auto;height:60px;padding:0 10px 0 22px;background:var(--field);color:var(--field-fg);
+  border-radius:999px;box-shadow:0 14px 34px -14px rgba(0,0,0,.55);font:500 17px var(--body)}
+.search svg{width:22px;height:22px;fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round}
+.search span{color:var(--muted)}
+.phone .brandrow{height:58px;grid-template-columns:1fr auto;gap:10px;padding:0 16px}
+.phone .logo{grid-column:1;justify-self:start;gap:10px;padding:4px 0}
+.phone .logo .sym{width:28px}
+.phone .logo b{font-size:25px}
+.phone .seg{grid-column:2}
+.phone .seg span{padding:6px 11px;font-size:12px}
+.phone .searchbar{padding:0 16px 14px}
+.phone .search{height:50px;padding:0 6px 0 16px;gap:10px;font-size:15px}
+.search span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.phone .logo b{font-size:22px}
+.shots>div{min-width:0}
+.brandrow{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}.phone .brandrow{grid-template-columns:minmax(0,1fr) auto}
+.logo{min-width:0}.logo .sym{flex:none}.logo b{overflow:hidden;text-overflow:ellipsis}
+
+.swatches{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.sw{width:120px}
+.sw div{background-color:var(--pbg);height:64px;border-radius:10px;border-bottom:3px solid var(--gold-500)}
+.sw span{display:block;font-size:12px;color:var(--muted);margin-top:4px}
+@media (max-width:860px){.shots{grid-template-columns:1fr}.phone{max-width:340px}.brandrow .logo b{font-size:28px}}
+@media (max-width:560px){.page{padding:24px 16px 60px}h1{font-size:34px}.shot:not(.phone) .brandrow{grid-template-columns:1fr auto;padding:0 16px}.shot:not(.phone) .logo{grid-column:1;justify-self:start}.shot:not(.phone) .logo b{font-size:24px}.shot:not(.phone) .logo .sym{width:28px}.shot:not(.phone) .brandrow{grid-template-columns:minmax(0,1fr) auto}.shot:not(.phone) .searchbar{padding:0 16px 14px}.shot:not(.phone) .search{height:50px;font-size:15px}.phone .logo b{font-size:20px}.shots>div:first-child{display:none}.phone{max-width:none}}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Header patterns</h1>
+  <p class="lede">Nine traditional patterns from Tajikistan and the Pamirs for the green header band, each drawn as a seamless tile in the brand greens. Switch the colourway to see every pattern in it; the small swatches under each one show all four. "Calm centre" fades the pattern behind the logo and search so they stay easy to read.</p>
+  <div class="controls">
+    <span class="lbl">Colourway</span><div class="pills" id="schemes"></div>
+    <label class="toggle"><input type="checkbox" id="calm" checked> Calm centre</label>
+  </div>
+  <div id="cards"></div>
+</div>
+<template id="logo"><div class="logo"><svg class="sym " viewBox="10 2 80 96" aria-hidden="true"><path class="s-arch" d="M10 98V46C10 26 27 10 50 2C73 10 90 26 90 46V98Z" fill="var(--lg-arch)"/><g transform="translate(17 26) scale(.66)"><g class="s-spine"><rect x="19" y="11" width="18" height="78" rx="3.5" fill="var(--lg-stem)"/><g fill="var(--lg-band)"><rect x="22.5" y="18" width="11" height="2.4" rx="1.2"/><rect x="22.5" y="22.4" width="11" height="1.4" rx=".7"/><rect x="22.5" y="80.6" width="11" height="2.4" rx="1.2"/><rect x="22.5" y="76.6" width="11" height="1.4" rx=".7"/></g></g><path class="s-u s-u0" d="M41 50C49 33 62 20 85 10C82 30 67 44 41 50Z" fill="#C9A24A" stroke="var(--lg-sep)" stroke-width="2.6" stroke-linejoin="round"/><path class="s-u s-u1" d="M41 50C47 41 55 34 68 32C65 42 57 48 41 50Z" fill="#EBD49A" stroke="var(--lg-sep)" stroke-width="2.6" stroke-linejoin="round"/><path class="s-l s-l0" d="M41 50C49 67 62 80 85 90C82 70 67 56 41 50Z" fill="var(--lg-l0)" stroke="var(--lg-sep)" stroke-width="2.6" stroke-linejoin="round"/><path class="s-l s-l1" d="M41 50C47 59 55 66 68 68C65 58 57 52 41 50Z" fill="var(--lg-l2)" stroke="var(--lg-sep)" stroke-width="2.6" stroke-linejoin="round"/></g></svg><b>Китобхонаи Азим</b></div></template>
+<script>
+/* ---------- colourways: background + pattern line, fill and accent ---------- */
+const SCHEMES = [
+  { id:"tone", name:"Tone on tone", bg:"#1F4D3A", ln:"rgba(250,248,243,.10)", fl:"rgba(250,248,243,.035)", ac:"rgba(201,162,74,.22)" },
+  { id:"gold", name:"Green & gold", bg:"#1F4D3A", ln:"rgba(201,162,74,.34)", fl:"rgba(250,248,243,.045)", ac:"rgba(201,162,74,.55)" },
+  { id:"two",  name:"Two greens",   bg:"#173D2E", ln:"#2E6B4F", fl:"#1F4D3A", ac:"#3D7C5D" },
+  { id:"night",name:"Night",        bg:"#132A20", ln:"rgba(156,197,173,.15)", fl:"rgba(156,197,173,.05)", ac:"rgba(201,162,74,.28)" },
+];
+
+const svg = (w, h, body) => `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'>${body}</svg>`;
+const url = s => `url("data:image/svg+xml,${encodeURIComponent(s).replace(/'/g, "%27")}")`;
+const f = n => +n.toFixed(2);
+const poly = pts => pts.map(p => p.map(f).join(" ")).join(" ");
+
+/* 8-pointed khatam star: two squares, one turned 45° */
+function star(cx, cy, R) {
+  const r = R * Math.cos(Math.PI / 4) / Math.cos(Math.PI / 8), pts = [];
+  for (let i = 0; i < 16; i++) { const a = i * Math.PI / 8, d = i % 2 ? r : R; pts.push([cx + d * Math.cos(a), cy + d * Math.sin(a)]); }
+  return poly(pts);
+}
+/* lozenge with stepped edges, the "bleed" of resist-dyed ikat thread */
+function ikat(cx, cy, w, h, step, jit) {
+  const R = [], L = [];
+  for (let y = -h, k = 0; y < h; y += step, k++) {
+    const hw = Math.max(0, w * (1 - Math.abs(y + step / 2) / h) + (k % 2 ? jit : -jit));
+    R.push([cx + hw, cy + y], [cx + hw, cy + y + step]); L.unshift([cx - hw, cy + y + step], [cx - hw, cy + y]);
+  }
+  return `M${poly([[cx, cy - h], ...R, [cx, cy + h], ...L])}Z`;
+}
+const boteh = "M0 18C-11 18-15 8-12 0C-9-8-2-12 3-17C5-19 8-20 9-18C10-16 7-15 6-13C10-9 12-3 11 4C10 12 6 18 0 18Z";
+const tulip = (x, y, s) => `<g transform='translate(${x} ${y}) scale(${s})'>
+  <path d='M0 4V26M0 20C-7 18-11 13-12 7M0 22C6 21 10 17 11 12' fill='none' stroke='LN' stroke-width='1.4' stroke-linecap='round'/>
+  <path d='M-9-4C-10-13-6-19-4-20L0-12L4-20C6-19 10-13 9-4C8 3 4 5 0 5C-4 5-8 3-9-4Z' fill='FL' stroke='LN' stroke-width='1.3'/>
+  <path d='M0-12C-2-8-2-1 0 5C2-1 2-8 0-12Z' fill='AC'/></g>`;
+const paint = (s, c) => s.replace(/LN/g, c.ln).replace(/FL/g, c.fl).replace(/AC/g, c.ac);
+
+/* knitted Pamiri jurab sock: 16×16 stitch chart, mirrored top to bottom */
+const KNIT = ["#......##......#","......#..#......",".....#.##.#.....","....#.#..#.#....","...#.#.##.#.#...","..#.#.#..#.#.#..",".#.#.#.##.#.#.#.","#.#.#.#..#.#.#.#"];
+const knitRows = [...KNIT, ...KNIT.slice().reverse()];
+
+const PATTERNS = [
+  { id:"now", name:"Current: row of arches", tj:"for comparison", what:"What the site has today: a faint row of pointed arches along the bottom edge, echoing the arch logo.",
+    layers: c => [[url(svg(44, 56, `<path d='M6 56V27C6 16 13 8 22 3C31 8 38 16 38 27V56' fill='none' stroke='${c.ln}' stroke-width='1.4'/>`)), "repeat-x", "center bottom", "44px 56px"]] },
+
+  { id:"chorkhona", name:"Chorkhona", tj:"Чорхона · Pamiri house skylight", what:"The roof lantern of the Pamiri house (chid): four squares stacked inside each other, each turned 45° from the one below, rising to the opening of light. The most local motif here, and a quiet grid.",
+    layers: c => [[url(svg(72, 72, `<rect x='4' y='4' width='64' height='64' fill='none' stroke='${c.ln}' stroke-width='1.2'/><path d='M36 4L68 36L36 68L4 36Z' fill='${c.fl}' stroke='${c.ln}' stroke-width='1.2'/><rect x='20' y='20' width='32' height='32' fill='none' stroke='${c.ln}' stroke-width='1.2'/><path d='M36 20L52 36L36 52L20 36Z' fill='${c.fl}' stroke='${c.ln}' stroke-width='1.2'/><rect x='31' y='31' width='10' height='10' fill='${c.ac}'/>`)), "repeat", "center", "72px 72px"]] },
+
+  { id:"girih", name:"Girih star and cross", tj:"Гирех · tilework of Samarkand and Bukhara", what:"Eight-pointed stars that touch at their tips, leaving cross shapes between them: the classic Persian–Central Asian star-and-cross tiling seen on madrasas and the Rudaki mausoleum.",
+    layers: c => [[url(svg(80, 80, [[40,40],[0,0],[80,0],[0,80],[80,80]].map(([x,y]) => `<polygon points='${star(x, y, 28.28)}' fill='${c.fl}' stroke='${c.ln}' stroke-width='1.2'/><circle cx='${x}' cy='${y}' r='4' fill='${c.ac}'/>`).join(""))), "repeat", "center", "80px 80px"]] },
+
+  { id:"suzani", name:"Suzani rosettes", tj:"Сӯзанӣ · embroidered medallions", what:"The large sun and moon medallions of suzani embroidery, with eight petals and a ring of stitches, set on a diagonal grid with small four-leaf flowers between them. Warm and decorative.",
+    layers: c => {
+      const med = (x, y) => `<circle cx='${x}' cy='${y}' r='34' fill='${c.fl}' stroke='${c.ln}' stroke-width='1.2'/>` +
+        [...Array(8)].map((_, i) => `<ellipse cx='${x}' cy='${y - 19}' rx='6.5' ry='12' fill='none' stroke='${c.ln}' stroke-width='1.2' transform='rotate(${i * 45} ${x} ${y})'/>`).join("") +
+        [...Array(16)].map((_, i) => { const a = i * Math.PI / 8; return `<circle cx='${f(x + 40 * Math.cos(a))}' cy='${f(y + 40 * Math.sin(a))}' r='1.6' fill='${c.ln}'/>`; }).join("") +
+        `<circle cx='${x}' cy='${y}' r='7' fill='${c.ac}'/>`;
+      const leaf = (x, y) => [0, 90, 180, 270].map(r => `<ellipse cx='${x}' cy='${y - 6}' rx='3' ry='6' fill='${c.ac}' transform='rotate(${r} ${x} ${y})'/>`).join("");
+      return [[url(svg(120, 120, med(60, 60) + [[0,0],[120,0],[0,120],[120,120]].map(([x, y]) => med(x, y)).join("") + leaf(60, 0) + leaf(0, 60) + leaf(120, 60) + leaf(60, 120))), "repeat", "center", "120px 120px"]];
+    } },
+
+  { id:"adras", name:"Adras ikat", tj:"Адрас · Атлас · resist-dyed silk", what:"The blurred, stepped lozenges of adras and atlas silk, where threads are dyed before weaving so every edge bleeds a little. Strong vertical rhythm, very recognisable.",
+    layers: c => [[url(svg(64, 128, [[32,64],[0,0],[64,0],[0,128],[64,128]].map(([x,y]) => `<path d='${ikat(x, y, 26, 60, 6, 2)}' fill='${c.fl}'/><path d='${ikat(x, y, 16, 38, 5, 1.5)}' fill='${c.ln}'/><path d='${ikat(x, y, 6, 14, 4, 1)}' fill='${c.ac}'/>`).join(""))), "repeat", "center", "64px 128px"]] },
+
+  { id:"jurab", name:"Jurab knit", tj:"Ҷуроб · Pamiri knitted socks", what:"Taken stitch by stitch from the patterned wool socks knitted in Badakhshan: nested diamonds drawn on a square grid. Pixel-crisp and unmistakably Pamiri.",
+    layers: c => {
+      let b = ""; knitRows.forEach((row, y) => [...row].forEach((ch, x) => { if (ch === "#") b += `<rect x='${x * 4}' y='${y * 4}' width='4' height='4' fill='${(x === 7 || x === 8) && (y === 7 || y === 8) ? c.ac : c.ln}'/>`; }));
+      return [[url(svg(64, 64, `<rect width='64' height='64' fill='${c.fl}'/>` + b)), "repeat", "center", "64px 64px"]];
+    } },
+
+  { id:"kalampir", name:"Kalampir", tj:"Каламфур · pepper / almond motif", what:"The pepper or almond shape (boteh) embroidered on skullcaps and dresses, here in rows that turn back to back. A softer, organic choice.",
+    layers: c => {
+      const m = (x, y, r) => `<g transform='translate(${x} ${y}) rotate(${r})'><path d='${boteh}' fill='${c.fl}' stroke='${c.ln}' stroke-width='1.2'/><path d='${boteh}' transform='scale(.55) translate(0 6)' fill='none' stroke='${c.ln}' stroke-width='1.6'/><circle cx='-1' cy='7' r='2.4' fill='${c.ac}'/></g>`;
+      return [[url(svg(80, 80, m(20, 22, -20) + m(60, 62, 160) + m(60, 22, 20) + m(20, 62, 200))), "repeat", "center", "80px 80px"]];
+    } },
+
+  { id:"lola", name:"Lola tulip border", tj:"Гули лола · tulip of the spring festival", what:"A border of mountain tulips, the flower of Sayri Guli Lola, along the bottom of the band over a very faint diamond lattice. Keeps the top clean, like the current arches.",
+    layers: c => [
+      [url(svg(56, 52, paint(tulip(28, 24, 1), c))), "repeat-x", "center bottom", "56px 52px"],
+      [url(svg(40, 40, `<path d='M20 0L40 20L20 40L0 20Z' fill='none' stroke='${c.ln}' stroke-opacity='.55' stroke-width='1'/>`)), "repeat", "center", "40px 40px"]] },
+
+  { id:"ogee", name:"Ogee lattice", tj:"Тоқӣ · lattice of arches and buds", what:"Curved, onion-arch shaped cells, the lattice of carved wooden screens and tiled domes, with a small bud in every cell. Elegant and close in spirit to the arch logo.",
+    layers: c => {
+      const bud = (x, y) => `<path d='M${x} ${y - 8}C${x + 5} ${y - 3} ${x + 5} ${y + 3} ${x} ${y + 7}C${x - 5} ${y + 3} ${x - 5} ${y - 3} ${x} ${y - 8}Z' fill='${c.ac}'/>`;
+      return [[url(svg(60, 90, `<path d='M30 0C30 22 0 24 0 45C0 66 30 68 30 90M30 0C30 22 60 24 60 45C60 66 30 68 30 90' fill='${c.fl}' stroke='${c.ln}' stroke-width='1.3'/>` + bud(30, 45) + bud(0, 0) + bud(60, 0) + bud(0, 90) + bud(60, 90))), "repeat", "center", "60px 90px"]];
+    } },
+];
+
+/* ---------- render ---------- */
+const LOGO = document.getElementById("logo").innerHTML;
+let scheme = SCHEMES[0];
+const bandStyle = (p, c, calm) => {
+  const L = p.layers(c), imgs = L.map(l => l[0]), rep = L.map(l => l[1]), pos = L.map(l => l[2]), size = L.map(l => l[3]);
+  if (calm && p.id !== "now" && p.id !== "lola") { imgs.unshift(`radial-gradient(ellipse 44% 78% at 50% 52%, ${c.bg} 38%, transparent 100%)`); rep.unshift("no-repeat"); pos.unshift("center"); size.unshift("100% 100%"); }
+  return `--pbg:${c.bg};background-image:${imgs.join(",")};background-repeat:${rep.join(",")};background-position:${pos.join(",")};background-size:${size.join(",")}`;
+};
+const header = (p, c, calm) => `<header class="band onband" style='${bandStyle(p, c, calm)}'>
+  <div class="brandrow">${LOGO}<div class="seg"><span>RU</span><span>TJ</span></div></div>
+  <div class="searchbar"><div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Название, автор или тема…</span></div></div></header>`;
+const below = `<div class="below"><i style="width:70px;background:#1F4D3A;opacity:.85"></i><i style="width:140px"></i><i style="width:96px"></i><i style="width:120px"></i></div>`;
+
+function render() {
+  const calm = document.getElementById("calm").checked;
+  document.getElementById("schemes").innerHTML = SCHEMES.map(s => `<button data-s="${s.id}" aria-pressed="${s === scheme}"><span class="dot" style="background:${s.bg}"></span>${s.name}</button>`).join("");
+  document.getElementById("cards").innerHTML = PATTERNS.map((p, i) => `<section class="card" id="${p.id}">
+    <div class="head"><span class="num">${String(i).padStart(2, "0")}</span><h2>${p.name}</h2><span class="tj">${p.tj}</span></div>
+    <p>${p.what}</p>
+    <div class="shots"><div><div class="shot">${header(p, scheme, calm)}${below}</div><div class="cap">Desktop</div></div>
+      <div><div class="shot phone">${header(p, scheme, calm)}${below}</div><div class="cap">Phone</div></div></div>
+    <div class="swatches">${SCHEMES.map(s => `<div class="sw"><div style='${bandStyle(p, s, false)}'></div><span>${s.name}</span></div>`).join("")}</div>
+  </section>`).join("");
+}
+document.getElementById("schemes").onclick = e => { const b = e.target.closest("button"); if (!b) return; scheme = SCHEMES.find(s => s.id === b.dataset.s); render(); };
+document.getElementById("calm").onchange = render;
+render();
+</script>
+</body>
+</html>

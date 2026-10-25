@@ -119,18 +119,21 @@ window.LIB = (function () {
   function counts(o) { prepQuery(); const c = {}; BOOKS.filter(b => matches(b, o)).forEach(b => c[b.cat] = (c[b.cat] || 0) + 1); return c; }
   function langsPresent() { return [...new Set(BOOKS.map(b => b.lang))]; }
 
-  /* covers: real Telegram cover from a one-row strip of 10 (covers/s{sheet}-{row}, WebP with JPEG fallback),
-     so a slow connection only downloads the rows on screen; else a generated cloth cover */
-  function coverBg(b) {
-    const [s, c, r] = b.cv, f = `covers/s${s}-${r}`;
-    return `background-image:url(${f}.jpg);background-image:image-set(url(${f}.webp) type('image/webp'),url(${f}.jpg) type('image/jpeg'));background-size:1000% 100%;background-position:${c / 9 * 100}% 0`;
-  }
-  function cover(b, palette) {
-    if (b.cv) {
-      return `<div class="cover img" role="img" aria-label="${esc(b.title)}" style="${coverBg(b)}"></div>`;
-    }
-    const col = palette[hash(b.title + b.author) % palette.length];
-    return `<div class="cover gen" style="--c:${col}"><span class="ca">${esc(b.author)}</span><span class="ct">${esc(b.title)}</span></div>`;
+  /* covers: every book gets the same designed cloth binding, coloured by section, with a gold frame,
+     the Chorkhona ornament, section, title, author and year (the scanned Telegram covers were too uneven).
+     Text is sized in cqw, so one cover scales from the 34 px list thumbnail to the full book page. */
+  const CLOTH = {
+    pamir: ["#1F4D3A", "#24573F"], history: ["#5E4A22", "#6A5228"], philosophy: ["#2B4652", "#30505C"],
+    religion: ["#24423A", "#2A4C42"], poetry: ["#5A2E36", "#64343C"], ethno: ["#6B5428", "#775E2E"],
+    language: ["#2E5446", "#345E4E"], prose: ["#4A3A28", "#54422E"], science: ["#2A3F4F", "#30485A"], other: ["#3E4A42", "#46534A"]
+  };
+  const ORN = `<svg class="orn" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M12 2 22 12 12 22 2 12Z" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="7" y="7" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="10" y="10" width="4" height="4" fill="currentColor"/></svg>`;
+  const coverColor = b => { const c = CLOTH[b.cat] || CLOTH.other; return c[hash(b.title) % c.length]; };
+  function cover(b) {
+    const n = b.title.length, fs = n <= 18 ? 13 : n <= 34 ? 11.5 : n <= 60 ? 10 : n <= 90 ? 8.5 : 7.5;
+    return `<div class="cover gen" role="img" aria-label="${esc(b.title)}" style="--c:${coverColor(b)};--fs:${fs}cqw"><div class="cin">${ORN}` +
+      `<span class="ce">${esc(L().cats[b.cat] || "")}</span><span class="ct">${esc(b.title)}</span>` +
+      `${b.author ? `<span class="ca">${esc(b.author)}</span>` : ""}${b.year ? `<span class="cy">${esc(b.year)}</span>` : ""}</div></div>`;
   }
   const fid = f => (f.match(/\/d\/([\w-]+)/) || f.match(/[?&]id=([\w-]+)/) || [])[1];
   const links = b => b.file && /github\.com/.test(b.file) ? { view: b.file, dl: b.file, only: true } : b.file ? { view: fid(b.file) ? `https://drive.google.com/file/d/${fid(b.file)}/view` : b.file, dl: fid(b.file) ? `https://drive.google.com/uc?export=download&id=${fid(b.file)}` : b.file } : null;
@@ -144,5 +147,5 @@ window.LIB = (function () {
   }
   function setLang(x) { S.lang = x; store.set("lang", x); document.documentElement.lang = x; }
   document.documentElement.lang = S.lang;
-  return { T, S, L, load, list, counts, langsPresent, cover, coverBg, links, meta, setLang, esc, get books() { return BOOKS; }, get failed() { return failed; } };
+  return { T, S, L, load, list, counts, langsPresent, cover, coverColor, links, meta, setLang, esc, get books() { return BOOKS; }, get failed() { return failed; } };
 })();

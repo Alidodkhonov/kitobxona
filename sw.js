@@ -1,7 +1,7 @@
 /* Китобхонаи Азим: keeps the catalogue and covers available offline and fast, even on a slow connection.
    Page and data: saved copy first, refreshed in the background (bump CACHE to force everyone onto a new release).
    Covers, icons, fonts, PDF.js: cache first. Only good responses are ever saved. */
-const CACHE = "kitobxona-v4";
+const CACHE = "kitobxona-v5";
 const SHELL = ["/", "/core.js", "/books.json", "/manifest.webmanifest", "/icons/icon-192.png", "/favicon.svg"];
 const LATER = ["/reader.html", "/vendor/pdfjs/pdf.min.js", "/vendor/pdfjs/pdf.worker.min.js"]; // big, fetched after the catalogue
 
