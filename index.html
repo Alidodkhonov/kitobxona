@@ -154,7 +154,9 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .chips span b{font-weight:600}
 .actionbar{position:fixed;left:0;right:0;bottom:0;z-index:41;display:flex;gap:10px;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .26s cubic-bezier(.2,.8,.2,1)}
 .page.on~.actionbar{transform:none}
-.actionbar .btn{min-height:50px;font-size:15px;border-radius:13px}
+.actionbar .btn{min-height:50px;font-size:15px;border-radius:13px;padding:10px 12px}
+.actionbar .btn small{display:none}
+.btn small{font-weight:500;opacity:.8;font-size:12.5px}
 .actionbar .ibtn{width:50px;height:50px;border-radius:13px}
 
 /* bottom sheet (sections & filters on phones) */
@@ -273,10 +275,10 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 const {S,L,esc}=LIB,$=id=>document.getElementById(id);
 const PAL=["#2b3a6b","#5a2a33","#2c4a42","#4b3765","#5e4a22","#324250"];
 const X={
-  ru:{home:"Библиотека",find:"Поиск",saved:"Сохранённые",save:"Сохранить",unsave:"Убрать",share:"Поделиться",copied:"Ссылка скопирована",
+  ru:{read:"Читать",dl:"Скачать",home:"Библиотека",find:"Поиск",saved:"Сохранённые",save:"Сохранить",unsave:"Убрать",share:"Поделиться",copied:"Ссылка скопирована",
       back:"Назад",savedT:"Сохранённые книги",noSaved:"Пока пусто",noSavedD:"Нажмите на значок закладки на странице книги, чтобы сохранить её здесь.",
       done:"Показать",sort:"Сортировка",bookLang:"Язык книги",addedS:"Книга сохранена",removedS:"Убрано из сохранённых",pages:"с."},
-  tg:{home:"Китобхона",find:"Ҷустуҷӯ",saved:"Захирашуда",save:"Захира",unsave:"Тоза",share:"Фиристодан",copied:"Пайванд нусха шуд",
+  tg:{read:"Хондан",dl:"Боргирӣ",home:"Китобхона",find:"Ҷустуҷӯ",saved:"Захирашуда",save:"Захира",unsave:"Тоза",share:"Фиристодан",copied:"Пайванд нусха шуд",
       back:"Бозгашт",savedT:"Китобҳои захирашуда",noSaved:"Ҳоло холӣ",noSavedD:"Барои захира кардан дар саҳифаи китоб тугмаи хатчӯбро пахш кунед.",
       done:"Нишон додан",sort:"Тартиб",bookLang:"Забони китоб",addedS:"Китоб захира шуд",removedS:"Аз захира тоза шуд",pages:"саҳ."}
 };
@@ -294,10 +296,12 @@ function icon(name){return{
   bm:'<svg class="i" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
   share:'<svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>',
   dl:'<svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>',
-  back:'<svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>'}[name]}
+  back:'<svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>',
+  read:'<svg class="i" viewBox="0 0 24 24"><path d="M2 5.5C4 4.5 7 4 12 6c5-2 8-1.5 10-.5V19c-2-1-5-1.5-10 .5-5-2-8-1.5-10-.5z"/><path d="M12 6v13.5"/></svg>'}[name]}
 
-function dlBtn(b,cls){const l=L(),k=LIB.links(b);if(!k)return `<span class="btn ${cls}" aria-disabled="true">${l.soon}</span>`;
-  return `<a class="btn ${cls}" target="_blank" rel="noopener" href="${esc(k.dl)}">${icon("dl")}${l.dlPdf}${b.mb?` · ${b.mb} ${l.mb}`:""}</a>`}
+function readBtn(b,cls){return `<a class="btn ${cls}" href="reader.html?b=${b.id}">${icon("read")}${x().read}</a>`}
+function dlBtn(b,cls){const l=L(),k=LIB.links(b);if(!k)return "";
+  return `<a class="btn ${cls}" target="_blank" rel="noopener" href="${esc(k.dl)}" download>${icon("dl")}<span>${x().dl}${b.mb?` <small>· ${b.mb} ${l.mb}</small>`:""}</span></a>`}
 function saveBtn(b){const on=saved.has(b.id);return `<button class="ibtn" data-save="${b.id}" aria-pressed="${on}" aria-label="${on?x().unsave:x().save}">${icon("bm")}</button>`}
 function shareBtn(b){return `<button class="ibtn" data-share="${b.id}" aria-label="${x().share}">${icon("share")}</button>`}
 
@@ -307,7 +311,7 @@ function bookBody(b,big){
   return `<div class="eb">${l.cats[b.cat]}</div><h2 id="${big?"pageTitle":"pvTitle"}">${esc(b.title)}</h2><div class="au">${esc(b.author||l.unknown)}</div>
    ${big?`<div class="chips">${facts.map(([t,v])=>`<span>${t}: <b>${esc(v)}</b></span>`).join("")}</div>`:""}
    ${b.desc?`<div class="desc">${esc(b.desc)}</div>`:""}
-   ${big?"":`<dl class="facts">${facts.map(([t,v])=>`<dt>${t}</dt><dd>${esc(v)}</dd>`).join("")}</dl><div class="acts">${dlBtn(b,"p")}${saveBtn(b)}${shareBtn(b)}</div>`}`;
+   ${big?"":`<dl class="facts">${facts.map(([t,v])=>`<dt>${t}</dt><dd>${esc(v)}</dd>`).join("")}</dl><div class="acts">${readBtn(b,"p")}${dlBtn(b,"")}</div><div class="acts" style="margin-top:8px">${saveBtn(b)}${shareBtn(b)}</div>`}`;
 }
 
 function render(){
@@ -352,7 +356,7 @@ function fillPage(b){
   const bg=b.cv?`background-image:url(covers/c${b.cv[0]}.jpg);background-size:1000% ${b.cv[3]*100}%;background-position:${b.cv[1]/9*100}% ${b.cv[3]>1?b.cv[2]/(b.cv[3]-1)*100:0}%`:`background:${PAL[0]}`;
   $("page").innerHTML=`<div class="page-bar"><button class="back" id="back">${icon("back")}${xx.back}</button>${shareBtn(b)}</div>
    <div class="hero"><div class="bgblur" style="${bg}"></div>${LIB.cover(b,PAL)}</div><div class="bk">${bookBody(b,true)}</div>`;
-  $("actionbar").innerHTML=`${dlBtn(b,"p")}${saveBtn(b)}`;
+  $("actionbar").innerHTML=`${readBtn(b,"p")}${dlBtn(b,"")}${saveBtn(b)}`;
   $("back").onclick=()=>history.back();
 }
 function openBook(id,push=true){
