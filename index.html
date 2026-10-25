@@ -374,7 +374,7 @@ function renderSheet(){
    <h3>${xx.sort}</h3><div class="opts">${[["new",l.sNew],["title",l.sTitle],["author",l.sAuthor]].map(([k,n])=>`<button data-so="${k}" aria-pressed="${S.sort===k}">${n}</button>`).join("")}</div>
    <button class="btn p done" id="shDone">${xx.done} · ${l.books(currentList().length)}</button>`;
 }
-function openSheet(){renderSheet();$("sheet").scrollTop=0;$("sheet").classList.add("on");$("scrim").classList.add("on");sheetOpen=true;history.pushState({sheet:1},"","#sections");updateTabs()}
+function openSheet(){if(savedOnly){savedOnly=false;render()}renderSheet();$("sheet").scrollTop=0;$("sheet").classList.add("on");$("scrim").classList.add("on");sheetOpen=true;history.pushState({sheet:1},"","#sections");updateTabs()}
 let sheetOpen=false;
 function closeSheet(back=true){if(!sheetOpen)return;sheetOpen=false;$("sheet").classList.remove("on");$("scrim").classList.remove("on");if(back&&location.hash==="#sections")history.back();updateTabs()}
 $("sheet").onclick=e=>{
