@@ -5,22 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Чтение · Китобхонаи Азим</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#13161c">
+<meta name="theme-color" content="#132A20">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=Golos+Text:wght@400;500;600&display=swap">
 <style>
 /* Reader: fixed top bar (back, title, page, modes) + scrolling stack of pages + bottom bar (slider, zoom). Bars hide while reading. */
 :root{
-  --bg:#0f1115; --bar:#171a21; --fg:#ece8df; --muted:#9b9fab; --line:#2a303c; --accent:#8fa7ff; --accent-fg:#13161c; --gold:#d3b16f;
+  --bg:#0C1511; --bar:#132A20; --fg:#ECE8DF; --muted:#9AB5A5; --line:#24372D; --accent:#9CC5AD; --accent-fg:#0F1A15; --gold:#D9B45F;
   --paper-shadow:0 2px 14px rgba(0,0,0,.45);
-  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; --display:"Alegreya",Georgia,serif; color-scheme:dark;
+  --body:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; --display:"Cormorant Garamond",Georgia,serif; color-scheme:dark;
 }
-:root[data-mode="sepia"]{--bg:#e9e0cc;--bar:#f3ead6;--fg:#3b2f1e;--muted:#7a6a52;--line:#d8cbb0;--accent:#8a5a1c;--accent-fg:#fff;--paper-shadow:0 2px 12px rgba(80,60,20,.25);color-scheme:light}
-:root[data-mode="day"]{--bg:#e8e8ea;--bar:#ffffff;--fg:#1a1d24;--muted:#646875;--line:#dcdde2;--accent:#3047b8;--accent-fg:#fff;--paper-shadow:0 2px 12px rgba(0,0,0,.15);color-scheme:light}
+:root[data-mode="sepia"]{--bg:#e9e0cc;--bar:#f3ead6;--fg:#3b2f1e;--muted:#7a6a52;--line:#d8cbb0;--accent:#8F6B22;--accent-fg:#fff;--paper-shadow:0 2px 12px rgba(80,60,20,.25);color-scheme:light}
+:root[data-mode="day"]{--bg:#ECE9E1;--bar:#FAF8F3;--fg:#12201A;--muted:#5D6A63;--line:#E0DBCF;--accent:#1F4D3A;--accent-fg:#fff;--paper-shadow:0 2px 12px rgba(0,0,0,.15);color-scheme:light}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 var(--body);-webkit-font-smoothing:antialiased}
 button,input{font:inherit;color:inherit}
@@ -37,7 +38,7 @@ body.immersive .botbar{transform:translateY(110%)}
 .ib:hover{background:color-mix(in srgb,var(--fg) 8%,transparent)}
 .ib:disabled{opacity:.35}
 .title{flex:1;min-width:0;padding:0 4px}
-.title b{display:block;font:700 16px/1.2 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.title b{display:block;font:700 18px/1.15 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .title span{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pg{border:1px solid var(--line);background:none;border-radius:8px;padding:5px 9px;font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap;min-height:34px}
 .dl{display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--accent-fg);background:var(--accent);border-radius:9px;padding:8px 12px;font-weight:600;font-size:13.5px;white-space:nowrap;min-height:38px}
@@ -60,7 +61,14 @@ body.immersive .botbar{transform:translateY(110%)}
 .state p{color:var(--muted);margin:0 0 16px}
 .prog{width:220px;height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin:14px auto 0}
 .prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
-.spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:sp 0.9s linear infinite;margin:0 auto 14px}
+.spin{width:52px;margin:0 auto 16px;--lg-arch:#FAF8F3;--lg-stem:#1F4D3A;--lg-band:#FAF8F3;--lg-sep:#FAF8F3;--lg-l0:#1F4D3A;--lg-l1:#2E6B4F;--lg-l2:#4F8A6B}
+.spin .sym{display:block;width:100%;height:auto}
+:root[data-mode="day"] .spin,:root[data-mode="sepia"] .spin{--lg-arch:#1F4D3A;--lg-stem:#FAF8F3;--lg-band:#1F4D3A;--lg-sep:#1F4D3A;--lg-l0:#FAF8F3;--lg-l1:#CFE0D6;--lg-l2:#9CC5AD}
+.loop .s-u,.loop .s-l{transform-box:fill-box;animation:leafLoop 1.8s cubic-bezier(.45,0,.2,1) infinite both}
+.loop .s-u{transform-origin:0 100%}.loop .s-l{transform-origin:0 0;animation-name:leafLoopL}
+.loop .s-u1,.loop .s-l1{animation-delay:.12s}.loop .s-u2,.loop .s-l2{animation-delay:.24s}
+@keyframes leafLoop{0%{transform:rotate(-38deg) scale(.3);opacity:0}30%,72%{transform:none;opacity:1}100%{transform:rotate(-38deg) scale(.3);opacity:0}}
+@keyframes leafLoopL{0%{transform:rotate(38deg) scale(.3);opacity:0}30%,72%{transform:none;opacity:1}100%{transform:rotate(38deg) scale(.3);opacity:0}}
 @keyframes sp{to{transform:rotate(360deg)}}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--accent);background:none;color:var(--accent);border-radius:10px;padding:10px 16px;font-weight:600;text-decoration:none;min-height:44px}
 .btn.p{background:var(--accent);color:var(--accent-fg)}
@@ -105,7 +113,7 @@ dialog input{width:100%;font-size:18px;padding:10px 12px;border-radius:10px;bord
   <button class="ib hide-sm" id="fs" aria-label="Во весь экран"><svg class="i" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
 </footer>
 
-<div class="state" id="state"><div class="box"><div class="spin"></div><b id="stT"></b><p id="stD"></p><div class="prog"><i id="prog"></i></div></div></div>
+<div class="state" id="state"><div class="box"><div class="spin"><svg class="sym loop" viewBox="10 2 80 96" aria-hidden="true"><path class="s-arch" d="M10 98V46C10 26 27 10 50 2C73 10 90 26 90 46V98Z" fill="var(--lg-arch)"/><g transform="translate(17 26) scale(.66)"><g class="s-spine"><rect x="19" y="11" width="18" height="78" rx="3.5" fill="var(--lg-stem)"/><g fill="var(--lg-band)"><rect x="22.5" y="18" width="11" height="2.4" rx="1.2"/><rect x="22.5" y="22.4" width="11" height="1.4" rx=".7"/><rect x="22.5" y="80.6" width="11" height="2.4" rx="1.2"/><rect x="22.5" y="76.6" width="11" height="1.4" rx=".7"/></g></g><path class="s-u s-u0" d="M41 50C49 33 62 20 85 10C82 30 67 44 41 50Z" fill="#C9A24A" stroke="var(--lg-sep)" stroke-width="2.6" stroke-linejoin="round"/><path class="s-u s-u1" d="M41 50C47 41 55 34 68 32C65 42 57 48 41 50Z" fill="#EBD49A" stroke="var(--lg-sep)" stroke-width="2.6" stroke-linejoin="round"/><path class="s-l s-l0" d="M41 50C49 67 62 80 85 90C82 70 67 56 41 50Z" fill="var(--lg-l0)" stroke="var(--lg-sep)" stroke-width="2.6" stroke-linejoin="round"/><path class="s-l s-l1" d="M41 50C47 59 55 66 68 68C65 58 57 52 41 50Z" fill="var(--lg-l2)" stroke="var(--lg-sep)" stroke-width="2.6" stroke-linejoin="round"/></g></svg></div><b id="stT"></b><p id="stD"></p><div class="prog"><i id="prog"></i></div></div></div>
 
 <dialog id="goto"><form method="dialog"><h3 id="gotoT"></h3><input id="gotoIn" type="number" inputmode="numeric" min="1"><div class="row"><button class="btn" value="cancel" id="gotoC"></button><button class="btn p" value="ok" id="gotoOk"></button></div></form></dialog>
 <div class="toast" id="toast" role="status"></div>
@@ -126,7 +134,7 @@ let mode=store.get("readerMode2","original");if(!["original","night","sepia","da
 const MODES=["original","night","sepia","day"];
 const ICONS={original:'<path d="M4 4h16v16H4z"/><path d="M4 15l4-4 5 5 3-3 4 4"/><circle cx="15.5" cy="8.5" r="1.5"/>',night:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',sepia:'<path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2v.5zM4 19.5A2 2 0 0 0 6 21h14"/>',day:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'};
 function setMode(m){mode=m;document.documentElement.dataset.mode=m;store.set("readerMode2",m);$("mode").querySelector("svg").innerHTML=ICONS[m];$("mode").setAttribute("aria-label",t.modes[m]);
-  document.querySelector('meta[name="theme-color"]').content=(m==="night"||m==="original")?"#13161c":m==="sepia"?"#f3ead6":"#ffffff"}
+  document.querySelector('meta[name="theme-color"]').content=(m==="night"||m==="original")?"#132A20":m==="sepia"?"#f3ead6":"#FAF8F3"}
 setMode(mode);
 $("mode").onclick=()=>{setMode(MODES[(MODES.indexOf(mode)+1)%3]);toast(t.modes[mode])};
 $("dlLbl").textContent=t.dl;
@@ -137,7 +145,7 @@ let tt;function toast(msg,action){const el=$("toast");el.innerHTML="";const s=do
   el.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>el.classList.remove("on"),action?6000:1600)}
 function showState(kind,extra){
   const st=$("state");st.hidden=false;
-  if(kind==="loading"){st.innerHTML=`<div class="box"><div class="spin"></div><b>${t.loading}</b><p>${t.loadingD}</p><div class="prog"><i id="prog"></i></div></div>`;return}
+  if(kind==="loading"){st.innerHTML=`<div class="box"><div class="spin"><svg class="sym loop" viewBox="10 2 80 96" aria-hidden="true"><path class="s-arch" d="M10 98V46C10 26 27 10 50 2C73 10 90 26 90 46V98Z" fill="var(--lg-arch)"/><g transform="translate(17 26) scale(.66)"><g class="s-spine"><rect x="19" y="11" width="18" height="78" rx="3.5" fill="var(--lg-stem)"/><g fill="var(--lg-band)"><rect x="22.5" y="18" width="11" height="2.4" rx="1.2"/><rect x="22.5" y="22.4" width="11" height="1.4" rx=".7"/><rect x="22.5" y="80.6" width="11" height="2.4" rx="1.2"/><rect x="22.5" y="76.6" width="11" height="1.4" rx=".7"/></g></g><path class="s-u s-u0" d="M41 50C49 33 62 20 85 10C82 30 67 44 41 50Z" fill="#C9A24A" stroke="var(--lg-sep)" stroke-width="2.6" stroke-linejoin="round"/><path class="s-u s-u1" d="M41 50C47 41 55 34 68 32C65 42 57 48 41 50Z" fill="#EBD49A" stroke="var(--lg-sep)" stroke-width="2.6" stroke-linejoin="round"/><path class="s-l s-l0" d="M41 50C49 67 62 80 85 90C82 70 67 56 41 50Z" fill="var(--lg-l0)" stroke="var(--lg-sep)" stroke-width="2.6" stroke-linejoin="round"/><path class="s-l s-l1" d="M41 50C47 59 55 66 68 68C65 58 57 52 41 50Z" fill="var(--lg-l2)" stroke="var(--lg-sep)" stroke-width="2.6" stroke-linejoin="round"/></g></svg></div><b>${t.loading}</b><p>${t.loadingD}</p><div class="prog"><i id="prog"></i></div></div>`;return}
   if(kind==="notfound"){st.innerHTML=`<div class="box"><b>${t.notFound}</b><p>${t.notFoundD}</p><div class="row"><a class="btn p" href="./">${t.toLib}</a></div></div>`;return}
   st.innerHTML=`<div class="box"><b>${t.err}</b><p>${t.errD}</p><div class="row"><button class="btn" id="retry">${t.retry}</button><a class="btn p" href="${extra}" target="_blank" rel="noopener">${t.dl}</a></div></div>`;
   $("retry").onclick=()=>location.reload();

@@ -1,7 +1,7 @@
 /* Китобхонаи Азим: keeps the catalogue and covers available offline and fast.
    Network first for the page and data (always fresh when online), cache first for covers and fonts. */
-const CACHE = "kitobxona-v2";
-const SHELL = ["/", "/core.js", "/books.json", "/reader.html", "/vendor/pdfjs/pdf.min.js", "/vendor/pdfjs/pdf.worker.min.js", "/manifest.webmanifest", "/icons/icon-192.png"];
+const CACHE = "kitobxona-v3";
+const SHELL = ["/", "/core.js", "/books.json", "/reader.html", "/vendor/pdfjs/pdf.min.js", "/vendor/pdfjs/pdf.worker.min.js", "/manifest.webmanifest", "/icons/icon-192.png", "/favicon.svg"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {
